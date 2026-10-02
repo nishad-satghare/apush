@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>APUSH Vocab Study</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mu:#6b6a63;--bd:#dcdad2;--ac:#2f5d8a;--ok:#2e7d4f;--no:#b3392f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--card:#232321;--tx:#eeede7;--mu:#a09f96;--bd:#3a3a36;--ac:#7fb0e0;--ok:#6cc08b;--no:#ee8077}}
+:root[data-theme="dark"]{--bg:#171716;--card:#232321;--tx:#eeede7;--mu:#a09f96;--bd:#3a3a36;--ac:#7fb0e0;--ok:#6cc08b;--no:#ee8077}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Georgia,'Times New Roman',serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--mu);font-size:14px;margin-bottom:16px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:8px}
+button.on,button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
+button:disabled{opacity:.5;cursor:default}
+.bar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin:6px 0 4px}
+.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .25s}
+.stats{display:flex;justify-content:space-between;color:var(--mu);font-size:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-top:14px}
+.tag{font:12px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+.q{font-size:19px;margin-bottom:16px}
+input{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx)}
+.row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.fb{margin-top:14px;padding:12px;border-radius:8px;border:1px solid var(--bd)}
+.fb.ok{border-color:var(--ok)}.fb.no{border-color:var(--no)}
+.fb b.ok{color:var(--ok)}.fb b.no{color:var(--no)}
+.hide{display:none}
+</style></head><body><main>
+<h1>APUSH Vocab Study</h1>
+<div class="sub">Final Quiz = 60 questions with reworded definitions. Type your answer and press Enter. Dates: type the year. Vocab: type the term.</div>
+<div class="tabs" id="tabs">
+<button data-m="final" class="on">Final Quiz (60)</button><button data-m="dates">Dates</button><button data-m="vocab">Vocab</button><button data-m="all">All mixed</button>
+</div>
+<div class="stats"><span id="pos"></span><span id="sc"></span></div>
+<div class="bar"><i id="pb"></i></div>
+<div class="card" id="card"></div>
+<script>
+const D=[
+["Start of the French and Indian War (Seven Years' War)","1754"],
+["Declaration of Independence","1776"],
+["Articles of Confederation adopted","1781"],
+["Constitution goes into effect","1789"],
+["Washington's Farewell Address","1796"],
+["First peaceful transition of power between parties (\"Revolution of ___\")","1800"],
+["Missouri Compromise","1820"],
+["Election of Andrew Jackson","1828"],
+["Compromise of 1850 (year of the compromise)","1850"],
+["Kansas-Nebraska Act passes; Republican Party founded","1854"],
+["Election of Abraham Lincoln","1860"],
+["End of the Civil War; start of Reconstruction; 13th Amendment","1865"]];
+const V=[
+["Early political rivalry between Federalists and Democratic-Republicans in the 1790s.","First Party System"],
+["Party of Hamilton and Adams favoring a strong central government, national bank, and commerce.","Federalists",["federalist"]],
+["Jefferson's party favoring states' rights, farmers, and limited government.","Democratic Republicans",["democratic-republicans","democratic republican","jeffersonian republicans"]],
+["Treasury Secretary's plan: assume state debts, fund the national debt, create a bank, and tax.","Hamilton's Financial Plan",["hamilton financial plan","hamiltons plan"]],
+["Federally chartered institution created at Hamilton's urging to manage government money and credit.","National Bank",["bank of the united states","first bank of the united states"]],
+["1794 tax protest by Pennsylvania farmers that Washington put down with force (compare Shays').","Whiskey Rebellion"],
+["1796 warning against permanent foreign alliances and political parties.","Washington's Farewell Address",["farewell address"]],
+["A tax on imported goods, used for revenue or to protect domestic industry.","Tariff"],
+["1798 laws restricting immigrants and criticism of the government; opposed by the Kentucky and Virginia Resolutions.","Alien and Sedition Acts",["alien and sedition"]],
+["Reading the Constitution narrowly: government may do only what is explicitly stated.","Strict Constructionism",["strict construction","strict constructionist"]],
+["Reading the Constitution broadly: government may do what is necessary and proper.","Loose Constructionism",["loose construction","broad constructionism","loose constructionist"]],
+["Power of courts to strike down laws that violate the Constitution.","Judicial Review"],
+["1803 case establishing judicial review.","Marbury v. Madison",["marbury"]],
+["1824 case: federal government, not states, regulates interstate commerce (steamboat monopoly).","Gibbons v. Ogden",["gibbons"]],
+["1819 case: Maryland could not tax the national bank; upheld implied powers.","McCulloch v. Maryland",["mcculloch"]],
+["Powers not explicitly listed in the Constitution but inferred from the Necessary and Proper Clause.","Implied Powers",["implied power"]],
+["The right to vote.","Franchise",["suffrage"]],
+["Era when political participation widened and politicians appealed to ordinary voters.","Mass Democracy"],
+["Requirement to own land or wealth to vote, mostly dropped in the early 1800s.","Property qualifications",["property qualification","property requirements"]],
+["Voting rights for all white men regardless of wealth.","Universal male suffrage",["universal white male suffrage"]],
+["Accusation that Clay gave Adams the presidency in exchange for becoming Secretary of State.","Corrupt bargain of 1824",["corrupt bargain"]],
+["Anti-Jackson party that grew out of one group and became another; favored the American System.","National Republicans→Whigs",["national republicans to whigs","national republicans","whigs","whig party"]],
+["Jackson's party, favoring the common man, limited federal government, and states' rights.","Democrats",["democratic party","democrat"]],
+["Era of Whigs vs. Democrats, roughly 1828 to the 1850s.","Second Party System"],
+["7th president; champion of the common man, 'Old Hickory'.","Andrew Jackson",["jackson"]],
+["Theory that a state can void a federal law it deems unconstitutional (South Carolina, 1832).","Nullification"],
+["Jackson's fight to destroy the Second Bank of the United States.","Bank War"],
+["Practice of rewarding political supporters with government jobs.","Spoils System",["spoils"]],
+["Clay's plan: protective tariff, national bank, and internal improvements.","American System"],
+["1803 purchase from France that doubled U.S. size.","Louisiana Purchase"],
+["1820 deal admitting Missouri as slave and Maine as free, banning slavery north of 36°30'.","Missouri Compromise"],
+["Land gained from Mexico after the Mexican-American War (1848).","Mexican Cession"],
+["Package of laws admitting California as free, strengthening fugitive slave law, and more.","Compromise of 1850"],
+["Law requiring citizens to help capture escaped enslaved people; part of the 1850 Compromise.","Fugitive Slave Act",["fugitive slave law"]],
+["Party opposing the expansion of slavery into the western territories.","Free Soil Party",["free soil"]],
+["1857 decision: enslaved people are not citizens and Congress cannot ban slavery in territories.","Dred Scott v Sanford",["dred scott","dred scott v. sandford","dred scott v sandford"]],
+["1854 law that repealed the Missouri Compromise line and applied popular sovereignty.","Kansas-Nebraska Act",["kansas nebraska act"]],
+["Violent clashes between pro- and anti-slavery settlers in a territory in the 1850s.","Bleeding Kansas"],
+["Idea that settlers of a territory vote on whether to allow slavery.","Popular sovereignty"],
+["Party formed in 1854 to oppose the spread of slavery.","Republican Party",["republicans","republican"]],
+["16th president, elected in 1860.","Abe Lincoln",["abraham lincoln","lincoln"]],
+["The government formed by the seceding Southern states.","Confederate States of America",["confederacy","csa","confederate states"]],
+["The Northern states that remained loyal during the Civil War.","The Union",["union"]],
+["Slave states that stayed in the Union (Kentucky, Missouri, Maryland, Delaware); the upper South.","Border States",["border state"]],
+["1863 riots in which mostly poor, white, working-class mobs attacked Black residents and protested conscription.","New York Draft Riots",["draft riots"]],
+["1863 order declaring enslaved people in rebelling states free.","Emancipation Proclamation"],
+["Lincoln's brief 1863 speech redefining the war as a fight for equality and a 'new birth of freedom'.","Gettysburg Address"],
+["Court order requiring authorities to justify detaining a person; Lincoln suspended it during the war.","Habeas Corpus"]];
+const D2=["Year the French and Indian War (Seven Years' War) broke out","Year the colonies formally declared independence from Britain","Year the Articles of Confederation took effect","Year the U.S. Constitution became operative","Year Washington issued his parting warning to the nation","Year of the 'Revolution of ___', the first peaceful handover of power between parties","Year Congress passed the deal over Missouri and Maine","Year Andrew Jackson won the presidency","Year of the package of laws that admitted California as a free state","Year the Kansas-Nebraska Act passed and the Republican Party began","Year Abraham Lincoln was elected president","Year the Civil War ended, Reconstruction began, and the 13th Amendment arrived"];
+const V2=["The 1790s political contest pitting Federalists against Democratic-Republicans.","Hamilton's and Adams's party, backing a powerful national government, a national bank, and business interests.","Jefferson's party, which championed farmers, state authority, and a smaller federal government.","The Treasury head's proposal to have the federal government take on state debts, pay off the national debt, charter a bank, and levy taxes.","Congress-chartered institution Hamilton wanted to hold federal funds and provide credit.","Pennsylvania farmers' 1794 uprising against a whiskey excise tax, crushed by federal troops; contrast with Shays'.","Washington's 1796 parting advice to avoid entangling foreign alliances and partisan factions.","A duty charged on imported goods to raise money or shield home industries.","1798 laws that made citizenship harder for immigrants and punished criticism of the government.","Interpreting the Constitution narrowly, so government does only what is expressly written.","Interpreting the Constitution flexibly, allowing any action that is necessary and proper.","The courts' authority to declare laws unconstitutional.","The 1803 Supreme Court ruling that first established the courts' power to strike down laws.","1824 ruling that Congress, not individual states, controls interstate commerce, involving steamboats.","1819 ruling that states can't tax the national bank, backing the idea of unlisted federal powers.","Authority the Constitution doesn't spell out but that flows from the Necessary and Proper Clause.","The legal right to cast a ballot.","Period when voting widened and candidates courted ordinary citizens.","A rule that voters had to own land or wealth, largely abolished by the early 1800s.","Allowing every white man to vote regardless of his wealth.","Jackson supporters' charge that Clay swung the 1824 election to Adams in return for the State Department.","The opposition to Jackson, first called by one name then another, that backed Clay's economic program.","Jackson's party, backing the common man, states' rights, and a small federal government.","The Whig-versus-Democrat political system from about 1828 into the 1850s.","Seventh president, nicknamed 'Old Hickory', who championed ordinary white men.","The doctrine, pushed by South Carolina in 1832, that states may cancel federal laws they find unconstitutional.","Jackson's campaign to destroy the Second Bank of the United States.","Handing out government jobs to loyal political allies.","Clay's program of a protective tariff, a national bank, and federally funded roads and canals.","France's 1803 sale of land that doubled the size of the United States.","1820 deal letting Missouri in as a slave state and Maine as free, and barring slavery north of 36°30'.","Territory the U.S. took from Mexico when the war ended in 1848.","Set of laws that admitted California as free, tightened fugitive slave rules, and more.","Law forcing citizens to help recapture people who escaped slavery, passed as part of the 1850 deal.","Political party that wanted slavery kept out of the western territories.","1857 ruling that enslaved people weren't citizens and Congress couldn't prohibit slavery in the territories.","1854 measure that erased the Missouri Compromise line and let settlers decide on slavery.","1850s fighting between pro-slavery and anti-slavery settlers over a territory's future.","The principle that a territory's residents vote on whether slavery is allowed.","Party founded in 1854 to stop slavery's spread.","The president elected in 1860, sixteenth in number.","The government created by Southern states after they seceded.","The Northern states that stayed loyal during the Civil War.","Slave states (Kentucky, Missouri, Maryland, Delaware) that didn't leave the Union; part of the upper South.","1863 uprising by mainly poor white workers against conscription that turned into attacks on Black New Yorkers.","1863 declaration freeing enslaved people in states in rebellion.","Lincoln's short 1863 speech recasting the war as a struggle for equality and a 'new birth of freedom'.","The protection against unlawful imprisonment that Lincoln suspended during the war."];
+const fin=()=>[...D.map((d,k)=>({type:'d',p:D2[k],a:d[1],label:d[1]})),...V.map((v,k)=>({type:'v',p:V2[k],a:v[1],alts:v[2],label:v[1]}))];
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLowerCase().replace(/→/g,' ').replace(/\bv\.?\b/g,' v ').replace(/[^a-z0-9 ]/g,' ').replace(/\b(the|of|a)\b/g,' ').replace(/\s+/g,' ').trim();
+function lev(a,b){const m=[];for(let i=0;i<=a.length;i++){m[i]=[i];}for(let j=1;j<=b.length;j++)m[0][j]=j;
+for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return m[a.length][b.length]}
+function check(it,inp){const x=norm(inp);if(!x)return false;
+if(it.type=='d')return x==it.a;
+return [it.a,...(it.alts||[])].map(norm).some(c=>x==c||(c.length>5&&lev(x,c)<=Math.floor(c.length*.15)))}
+let mode='dates',q=[],i=0,score=0,missed=[],answered=false,lastOk=false;
+const shuffle=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const dates=()=>D.map(d=>({type:'d',p:d[0],a:d[1],label:d[1]}));
+const vocab=()=>V.map(v=>({type:'v',p:v[0],a:v[1],alts:v[2],label:v[1]}));
+function start(items){q=shuffle(items);i=0;score=0;missed=[];render()}
+function init(m){mode=m;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m==m));
+start(m=='final'?fin():m=='dates'?dates():m=='vocab'?vocab():[...dates(),...vocab()])}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>init(b.dataset.m));
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function render(){answered=false;const c=$('card');
+$('pb').style.width=(i/q.length*100)+'%';$('sc').textContent='Correct: '+score+' | Missed: '+missed.length;
+if(i>=q.length){$('pos').textContent='Done';
+c.innerHTML='<div class="tag">Finished</div><div class="q">You got '+score+' of '+q.length+' ('+Math.round(score/q.length*100)+'%).</div><div class="row">'+(missed.length?'<button class="pri" id="rm">Retry '+missed.length+' missed</button>':'')+'<button id="ra">Restart this deck</button></div>';
+if($('rm'))$('rm').onclick=()=>start(missed);$('ra').onclick=()=>init(mode);return}
+const it=q[i];$('pos').textContent='Question '+(i+1)+' of '+q.length;
+c.innerHTML='<div class="tag">'+(it.type=='d'?'Type the year':'Type the term')+'</div><div class="q">'+esc(it.p)+'</div>'+
+'<input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(it.type=='d'?'Year':'Your answer')+'">'+
+'<div class="row"><button class="pri" id="sub">Check</button><button id="rev">Show answer</button></div><div id="fb"></div>';
+$('in').focus();$('sub').onclick=submit;$('rev').onclick=()=>finish(false,true);
+}
+document.addEventListener('keydown',e=>{
+if(e.key!='Enter'||e.repeat||e.target.tagName=='BUTTON'||i>=q.length)return;
+e.preventDefault();answered?next():submit()});
+function submit(){if(answered)return next();finish(check(q[i],$('in').value),false)}
+function finish(ok,gaveUp){if(answered)return;answered=true;lastOk=ok;const it=q[i];
+if(ok)score++;else missed.push(it);
+$('sc').textContent='Correct: '+score+' | Missed: '+missed.length;
+$('in').disabled=true;$('rev').classList.add('hide');$('sub').textContent='Next';$('sub').onclick=next;
+let h='<div class="fb '+(ok?'ok':'no')+'"><b class="'+(ok?'ok':'no')+'">'+(ok?'Correct':gaveUp?'Answer':'Not quite')+'</b> '+(ok?'':'The answer is <b>'+esc(it.label)+'</b>.');
+if(!ok&&!gaveUp)h+=' <button id="ovr" style="margin-left:6px;padding:3px 10px">Mark me correct</button>';
+if(ok)h+='<b>'+esc(it.label)+'</b>';
+$('fb').innerHTML=h+'</div>';
+const o=$('ovr');if(o)o.onclick=()=>{missed.pop();score++;o.remove();$('sc').textContent='Correct: '+score+' | Missed: '+missed.length;const f=document.querySelector('.fb');f.className='fb ok';f.firstChild.className='ok';f.firstChild.textContent='Marked correct'}}
+function next(){i++;render()}
+init('final');
+</script></main></body></html>
